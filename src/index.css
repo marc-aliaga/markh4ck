@@ -5,11 +5,13 @@
 
 body {
   font-family: "Inter", sans-serif;
-  background-color: #000;
-  background-image: url("assets/background.png");
-  background-size: cover;        /* Hace que la imagen cubra toda la pantalla */
-  background-position: center;   /* Centra la imagen */
-  background-repeat: no-repeat;  /* Evita que se repita */
+  background-color: #0a0a0a;
+  background-image:
+    radial-gradient(ellipse 70% 45% at 50% -5%, rgba(218, 119, 86, 0.28), transparent 60%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: auto, 44px 44px, 44px 44px;
+  background-attachment: fixed;
   color: #fff;
   font-size: 14px;
   line-height: 20px;

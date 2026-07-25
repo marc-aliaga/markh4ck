@@ -32,3 +32,62 @@ export const ArrowIcon = ({ ...props }) => {
     </svg>
   );
 };
+
+export const PlayIcon = ({ ...props }) => {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" {...props}>
+      <circle cx="12" cy="12" r="11" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M10 8.5L16 12L10 15.5V8.5Z" fill="currentColor" />
+    </svg>
+  );
+};
+
+export const ChevronDownIcon = ({ ...props }) => {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" {...props}>
+      <path
+        d="M6 9L12 15L18 9"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const LockIcon = ({ ...props }) => {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" {...props}>
+      <rect
+        x="5"
+        y="11"
+        width="14"
+        height="9"
+        rx="2"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M8 11V7.5C8 5.29 9.79 3.5 12 3.5C14.21 3.5 16 5.29 16 7.5V11"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+};
+
+export const CheckIcon = ({ ...props }) => {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" {...props}>
+      <path
+        d="M5 12.5L9.5 17L19 7"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};

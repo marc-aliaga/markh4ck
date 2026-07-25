@@ -31,6 +31,7 @@ function Blog() {
   }, []);
 
   return (
+    <div className="min-h-screen bg-[#0a0a0a] text-white py-8">
     <Container id="blog">
       <FadeIn>
         <div className="w-full">
@@ -130,6 +131,7 @@ function Blog() {
         </div>
       </FadeIn>
     </Container>
+    </div>
   );
 }
 
