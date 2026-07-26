@@ -54,27 +54,34 @@ const QUESTIONS = [
   },
 ];
 
+const TOTAL_STEPS = QUESTIONS.length + 1;
+
 function LeadQuiz() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [nombre, setNombre] = useState("");
+  const [email, setEmail] = useState("");
   const [redirecting, setRedirecting] = useState(false);
   const [redirectUrl, setRedirectUrl] = useState(null);
 
+  const isContactStep = step === QUESTIONS.length;
   const current = QUESTIONS[step];
-  const isLast = step === QUESTIONS.length - 1;
 
   const handleSelect = (option) => {
     const nextAnswers = { ...answers, [current.key]: option };
     setAnswers(nextAnswers);
+    setTimeout(() => setStep((s) => s + 1), 250);
+  };
 
-    if (!isLast) {
-      setTimeout(() => setStep((s) => s + 1), 250);
-      return;
-    }
+  const handleContactSubmit = (e) => {
+    e.preventDefault();
+    if (!nombre.trim() || !email.trim()) return;
 
-    sendLeadToSheet(nextAnswers);
-    const params = new URLSearchParams({ utm_source: "vsl", ...nextAnswers });
+    const finalAnswers = { ...answers, nombre, email };
+    setAnswers(finalAnswers);
+    sendLeadToSheet(finalAnswers);
+    const params = new URLSearchParams({ utm_source: "vsl", ...finalAnswers });
     const url = `/academia?${params.toString()}`;
     setRedirectUrl(url);
     setRedirecting(true);
@@ -90,7 +97,8 @@ function LeadQuiz() {
           <CheckIcon className="w-7 h-7 text-[#da7756]" />
         </span>
         <h3 className="text-3xl font-bold text-white max-md:text-2xl">
-          Ya tienes tu plaza en de0aHacker
+          {answers.nombre ? `${answers.nombre}, ya` : "Ya"} tienes tu plaza
+          en de0aHacker
         </h3>
         <p className="mt-4 text-lg text-[#8a8a93] max-w-[560px] mx-auto leading-relaxed max-md:text-base">
           Partiendo de tu nivel —{" "}
@@ -98,6 +106,9 @@ function LeadQuiz() {
           vas a tener las lecciones, los laboratorios de reversing con IA y
           la comunidad que necesitas para conseguir tu objetivo:{" "}
           <span className="text-white font-medium">{answers.objetivo}</span>.
+          Te avisaremos a{" "}
+          <span className="text-white font-medium">{answers.email}</span>{" "}
+          en cuanto abramos.
         </p>
 
         <Link
@@ -118,9 +129,9 @@ function LeadQuiz() {
     <div className="w-full bg-[#131315] rounded-3xl border border-white/5 px-8 py-10 max-md:px-5">
       {/* Progress */}
       <div className="flex gap-2 mb-8">
-        {QUESTIONS.map((q, idx) => (
+        {Array.from({ length: TOTAL_STEPS }).map((_, idx) => (
           <div
-            key={q.key}
+            key={idx}
             className={`h-1.5 flex-1 rounded-full transition-colors ${
               idx <= step ? "bg-[#da7756]" : "bg-white/10"
             }`}
@@ -128,35 +139,78 @@ function LeadQuiz() {
         ))}
       </div>
 
-      <p className="text-sm font-mono font-medium text-[#da7756] mb-2">
-        Pregunta {step + 1} de {QUESTIONS.length}
-      </p>
-      <h3 className="text-3xl font-bold text-white mb-6 max-md:text-2xl">
-        {current.question}
-      </h3>
-
-      <div className="grid grid-cols-2 gap-3 max-md:grid-cols-1">
-        {current.options.map((option) => {
-          const selected = answers[current.key] === option;
-          return (
+      {isContactStep ? (
+        <>
+          <p className="text-sm font-mono font-medium text-[#da7756] mb-2">
+            Último paso
+          </p>
+          <h3 className="text-3xl font-bold text-white mb-2 max-md:text-2xl">
+            ¿Dónde te reservamos la plaza?
+          </h3>
+          <p className="text-[#8a8a93] mb-6">
+            Ponnos tu nombre y email para bloquear tu acceso al precio de
+            lanzamiento antes de que se agoten las plazas.
+          </p>
+          <form onSubmit={handleContactSubmit}>
+            <div className="grid grid-cols-2 gap-3 max-md:grid-cols-1">
+              <input
+                type="text"
+                required
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                placeholder="Tu nombre"
+                className="bg-[#0a0a0a] border border-white/10 focus:border-[#da7756] outline-none text-white placeholder:text-[#6b6a66] px-5 py-4 rounded-2xl transition-colors"
+              />
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="tu@email.com"
+                className="bg-[#0a0a0a] border border-white/10 focus:border-[#da7756] outline-none text-white placeholder:text-[#6b6a66] px-5 py-4 rounded-2xl transition-colors"
+              />
+            </div>
             <button
-              key={option}
-              type="button"
-              onClick={() => handleSelect(option)}
-              className={`flex items-center justify-between gap-3 text-left px-5 py-4 rounded-2xl border transition-colors ${
-                selected
-                  ? "border-[#da7756] bg-[#da7756]/10 text-white"
-                  : "border-white/10 hover:border-[#da7756]/60 text-white"
-              }`}
+              type="submit"
+              className="mt-3 w-full bg-[#da7756] hover:bg-[#c2603f] transition-colors text-white font-bold px-8 py-4 rounded-2xl shadow-[0_0_40px_rgba(218,119,86,0.5)]"
             >
-              <span className="font-medium">{option}</span>
-              {selected && (
-                <CheckIcon className="w-5 h-5 text-[#da7756] shrink-0" />
-              )}
+              Reservar mi plaza →
             </button>
-          );
-        })}
-      </div>
+          </form>
+        </>
+      ) : (
+        <>
+          <p className="text-sm font-mono font-medium text-[#da7756] mb-2">
+            Pregunta {step + 1} de {QUESTIONS.length}
+          </p>
+          <h3 className="text-3xl font-bold text-white mb-6 max-md:text-2xl">
+            {current.question}
+          </h3>
+
+          <div className="grid grid-cols-2 gap-3 max-md:grid-cols-1">
+            {current.options.map((option) => {
+              const selected = answers[current.key] === option;
+              return (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => handleSelect(option)}
+                  className={`flex items-center justify-between gap-3 text-left px-5 py-4 rounded-2xl border transition-colors ${
+                    selected
+                      ? "border-[#da7756] bg-[#da7756]/10 text-white"
+                      : "border-white/10 hover:border-[#da7756]/60 text-white"
+                  }`}
+                >
+                  <span className="font-medium">{option}</span>
+                  {selected && (
+                    <CheckIcon className="w-5 h-5 text-[#da7756] shrink-0" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
     </div>
   );
 }
