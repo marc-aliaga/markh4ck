@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import Container from "./Container";
 import pranay from "../assets/pranay.jpg";
 import { FadeIn, FadeInStagger } from "./FadeIn";
@@ -8,33 +9,85 @@ import LeadQuiz from "./LeadQuiz";
 import Faq from "./Faq";
 import Socials from "./Socials";
 
+// TODO: sustituye estos IDs por los de tus 3 últimos vídeos de YouTube
+const YOUTUBE_VIDEOS = [
+  { id: "dQw4w9WgXcQ", title: "Vídeo 1 — sustituye por el título real" },
+  { id: "dQw4w9WgXcQ", title: "Vídeo 2 — sustituye por el título real" },
+  { id: "dQw4w9WgXcQ", title: "Vídeo 3 — sustituye por el título real" },
+];
+
+// TODO: sustituye cada videoId por el vídeo explicativo real del módulo
 const LEVELS = [
   {
     n: "01",
-    title: "Fundamentos",
-    desc: "Arquitectura, ensamblador y cómo piensa una máquina por dentro.",
+    title: "Entendiendo el lenguaje máquina",
+    desc: "Compilación, ensamblador, hexadecimal y formatos PE/ELF.",
+    videoId: "dQw4w9WgXcQ",
   },
   {
     n: "02",
-    title: "Reversing con IA",
-    desc: "Usa LLMs como copiloto para analizar binarios mucho más rápido.",
+    title: "Análisis estático y dinámico con IA",
+    desc: "Debuggers y disassemblers usando LLMs como copiloto para analizar binarios mucho más rápido.",
+    videoId: "dQw4w9WgXcQ",
   },
   {
     n: "03",
-    title: "Hacking ético",
-    desc: "Explotación práctica paso a paso, de forma segura y legal.",
+    title: "Cracking de software",
+    desc: "Licencias, anti-debug y packers: cómo funcionan y cómo saltárselos.",
+    videoId: "dQw4w9WgXcQ",
   },
   {
     n: "04",
-    title: "Automatización",
-    desc: "Scripts y agentes de IA para acelerar tu flujo de trabajo.",
+    title: "Explotación binaria y malware",
+    desc: "De la vulnerabilidad al exploit, y análisis de muestras de malware reales.",
+    videoId: "dQw4w9WgXcQ",
   },
   {
     n: "05",
     title: "Proyecto final",
-    desc: "Aplica todo lo aprendido y entra en la comunidad privada.",
+    desc: "Aplica todo lo aprendido en un reto completo y entra en la comunidad privada.",
+    videoId: "dQw4w9WgXcQ",
   },
 ];
+
+function LevelCard({ level }) {
+  const [showVideo, setShowVideo] = useState(false);
+
+  return (
+    <div className="group bg-[#131315] rounded-3xl border border-white/5 hover:border-[#da7756]/40 transition-colors p-8 max-md:p-6">
+      <div className="flex items-center gap-8 max-md:flex-col max-md:items-start max-md:gap-4">
+        <span className="text-6xl font-mono font-extrabold text-white/10 group-hover:text-[#da7756]/30 transition-colors shrink-0 max-md:text-4xl">
+          {level.n}
+        </span>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-2xl font-bold text-white mb-1">
+            {level.title}
+          </h3>
+          <p className="text-[#8a8a93] leading-relaxed">{level.desc}</p>
+          <button
+            type="button"
+            onClick={() => setShowVideo((v) => !v)}
+            className="mt-4 inline-flex items-center gap-2 text-sm font-mono text-[#da7756] hover:text-[#c2603f] transition-colors"
+          >
+            {showVideo ? "▲ ocultar vídeo del módulo" : "▶ ver vídeo del módulo"}
+          </button>
+        </div>
+      </div>
+      {showVideo && (
+        <div className="mt-6 aspect-video max-w-[480px] rounded-2xl overflow-hidden">
+          <iframe
+            className="w-full h-full"
+            src={`https://www.youtube-nocookie.com/embed/${level.videoId}`}
+            title={`Vídeo explicativo — ${level.title}`}
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+      )}
+    </div>
+  );
+}
 
 function Home() {
   const [videoFinished, setVideoFinished] = useState(false);
@@ -56,7 +109,10 @@ function Home() {
           className="text-center max-w-[820px] mx-auto pt-20 pb-14 max-md:pt-10 max-md:pb-8"
         >
           <h1 className="text-8xl font-extrabold tracking-tight leading-[1.02] max-md:text-[46px] max-md:leading-[1.05]">
-            De 0 a <span className="text-[#da7756]">Hacker</span>
+            De 0 a{" "}
+            <span className="inline-block bg-[#da7756] text-[#0a0a0a] px-4 rounded-2xl -rotate-1 max-md:px-2 max-md:rounded-xl">
+              Hacker
+            </span>
             <br />
             con IA
           </h1>
@@ -121,19 +177,7 @@ function Home() {
       <FadeInStagger className="flex flex-col gap-3 mb-4">
         {LEVELS.map((level) => (
           <FadeIn key={level.n}>
-            <div className="group flex items-center gap-8 bg-[#131315] rounded-3xl border border-white/5 hover:border-[#da7756]/40 transition-colors p-8 max-md:flex-col max-md:items-start max-md:gap-4 max-md:p-6">
-              <span className="text-6xl font-mono font-extrabold text-white/10 group-hover:text-[#da7756]/30 transition-colors shrink-0 max-md:text-4xl">
-                {level.n}
-              </span>
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-1">
-                  {level.title}
-                </h3>
-                <p className="text-[#8a8a93] leading-relaxed">
-                  {level.desc}
-                </p>
-              </div>
-            </div>
+            <LevelCard level={level} />
           </FadeIn>
         ))}
       </FadeInStagger>
@@ -151,13 +195,22 @@ function Home() {
         </div>
       </FadeIn>
 
-      <FadeInStagger className="grid gap-4 grid-cols-3 max-mdd:grid-cols-1 mb-4">
-        {[1, 2, 3].map((n) => (
-          <FadeIn key={n}>
-            <div className="h-full bg-[#131315] rounded-3xl border border-dashed border-white/10 p-6 flex items-center justify-center text-center">
-              <p className="text-sm text-[#6b6a66] italic">
-                Testimonio de alumno #{n} — sustituye este bloque antes de
-                publicar.
+      <FadeInStagger className="grid gap-4 grid-cols-3 max-md:grid-cols-1 mb-4">
+        {YOUTUBE_VIDEOS.map((video) => (
+          <FadeIn key={video.id}>
+            <div className="h-full bg-[#131315] rounded-3xl border border-white/5 overflow-hidden">
+              <div className="aspect-video">
+                <iframe
+                  className="w-full h-full"
+                  src={`https://www.youtube-nocookie.com/embed/${video.id}`}
+                  title={video.title}
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+              <p className="text-sm text-[#8a8a93] px-4 py-3 truncate">
+                {video.title}
               </p>
             </div>
           </FadeIn>
@@ -175,17 +228,17 @@ function Home() {
       <FadeIn>
         <div className="mb-4 bg-[#131315] rounded-3xl border border-[#da7756]/30 p-14 text-center max-md:p-8 shadow-[0_0_80px_-20px_rgba(218,119,86,0.35)]">
           <h2 className="text-4xl font-extrabold text-white max-md:text-2xl">
-            Empieza gratis ahora mismo
+            ¡Empieza tu camino como hacker hoy!
           </h2>
           <p className="mt-2 text-[#8a8a93] text-lg max-md:text-base">
             Mira el vídeo, responde 4 preguntas y entra a de0aHacker.
           </p>
-          <a
-            href="#vsl"
+          <Link
+            to="/academia"
             className="inline-block mt-8 bg-[#da7756] hover:bg-[#c2603f] transition-colors text-white font-bold text-lg px-10 py-5 rounded-2xl shadow-[0_0_40px_rgba(218,119,86,0.5)]"
           >
-            Ver el vídeo →
-          </a>
+            Acceder a la academia →
+          </Link>
         </div>
       </FadeIn>
 

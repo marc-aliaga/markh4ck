@@ -1,8 +1,6 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { CheckIcon } from "./Icons";
-
-// TODO: sustituye por la URL real de tu comunidad/curso en Skool.
-const SKOOL_URL = "https://www.skool.com/de0ahacker";
 
 // TODO: pega aquí la URL de tu Google Apps Script (Deploy > Web app).
 // Con esto, cada respuesta del quiz se guarda como fila en tu Google Sheet.
@@ -57,6 +55,7 @@ const QUESTIONS = [
 ];
 
 function LeadQuiz() {
+  const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [redirecting, setRedirecting] = useState(false);
@@ -76,11 +75,11 @@ function LeadQuiz() {
 
     sendLeadToSheet(nextAnswers);
     const params = new URLSearchParams({ utm_source: "vsl", ...nextAnswers });
-    const url = `${SKOOL_URL}?${params.toString()}`;
+    const url = `/academia?${params.toString()}`;
     setRedirectUrl(url);
     setRedirecting(true);
     setTimeout(() => {
-      window.location.href = url;
+      navigate(url);
     }, 5000);
   };
 
@@ -101,12 +100,12 @@ function LeadQuiz() {
           <span className="text-white font-medium">{answers.objetivo}</span>.
         </p>
 
-        <a
-          href={redirectUrl || "#"}
+        <Link
+          to={redirectUrl || "/academia"}
           className="inline-block mt-8 bg-[#da7756] hover:bg-[#c2603f] transition-colors text-white font-bold text-lg px-10 py-4 rounded-2xl shadow-[0_0_40px_rgba(218,119,86,0.5)]"
         >
           Entrar a de0aHacker →
-        </a>
+        </Link>
 
         <p className="mt-4 text-xs font-mono text-[#6b6a66]">
           &gt; te llevamos automáticamente en unos segundos...

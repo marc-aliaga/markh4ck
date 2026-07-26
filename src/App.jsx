@@ -5,6 +5,7 @@ import Blog from "./components/Blog";
 import BlogArticle from "./components/BlogArticle";
 import Navbar from "./components/Navbar";
 import Recursos from "./components/Recursos";
+import ComingSoon from "./components/ComingSoon";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -17,6 +18,7 @@ function App() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogArticle />} />
         <Route path="/recursos" element={<Recursos />} />
+        <Route path="/academia" element={<ComingSoon />} />
       </Routes>
     </BrowserRouter>
   );
