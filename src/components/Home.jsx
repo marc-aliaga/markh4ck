@@ -9,11 +9,19 @@ import LeadQuiz from "./LeadQuiz";
 import Faq from "./Faq";
 import Socials from "./Socials";
 
-// TODO: sustituye estos IDs por los de tus 3 últimos vídeos de YouTube
 const YOUTUBE_VIDEOS = [
-  { id: "dQw4w9WgXcQ", title: "Vídeo 1 — sustituye por el título real" },
-  { id: "dQw4w9WgXcQ", title: "Vídeo 2 — sustituye por el título real" },
-  { id: "dQw4w9WgXcQ", title: "Vídeo 3 — sustituye por el título real" },
+  {
+    id: "YYyjC55o7Dk",
+    title: "Crackeando un serial paso a paso (Ingeniería Inversa)",
+  },
+  {
+    id: "l2LuTCvoC-g",
+    title: "Esto es lo que hay dentro de un .EXE",
+  },
+  {
+    id: "slNbu0a65so",
+    title: "Aprende a crackear un programa desde 0 (CTF)",
+  },
 ];
 
 // TODO: sustituye cada videoId por el vídeo explicativo real del módulo
