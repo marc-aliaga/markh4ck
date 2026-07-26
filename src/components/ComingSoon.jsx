@@ -108,18 +108,18 @@ function ComingSoon() {
             </p>
             <div className="mt-4 flex items-end justify-center gap-4 flex-wrap">
               <span className="text-6xl font-extrabold text-white max-md:text-5xl">
-                $10
+                12€
                 <span className="text-xl text-[#8a8a93] font-medium">
                   /mes
                 </span>
               </span>
               <span className="text-2xl text-[#6b6a66] line-through font-mono">
-                $25/mes
+                20€/mes
               </span>
             </div>
             <p className="mt-3 text-[#8a8a93]">
               Precio válido solo para los primeros inscritos. Después de la
-              apertura, sube a $25/mes.
+              apertura, sube a 20€/mes.
             </p>
           </div>
         </FadeIn>
@@ -136,7 +136,7 @@ function ComingSoon() {
                 </h3>
                 <p className="mt-2 text-[#8a8a93]">
                   Te avisaremos por email en cuanto abramos. Tendrás acceso
-                  al precio de $10/mes que ves en pantalla.
+                  al precio de 12€/mes que ves en pantalla.
                 </p>
               </div>
             ) : (

@@ -12,7 +12,7 @@ const FAQS = [
   },
   {
     q: "¿Cuánto tiempo tengo acceso al contenido?",
-    a: "[Placeholder — indica aquí tu política de acceso: de por vida, anual, mientras estés en la comunidad, etc.]",
+    a: "de0aHacker funciona por suscripción mensual: mientras tu suscripción esté activa tienes acceso a todos los módulos, las actualizaciones y la comunidad privada. Puedes cancelar cuando quieras y conservas el acceso hasta el final del periodo ya pagado.",
   },
   {
     q: "¿Hay comunidad o soporte incluido?",

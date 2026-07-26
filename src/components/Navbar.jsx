@@ -25,15 +25,6 @@ function Navbar() {
             ← Volver a la home
           </Link>
         )}
-
-        {isHome && (
-          <Link
-            to="/blog"
-            className="text-sm font-medium text-[#8a8a93] hover:text-[#da7756] transition-colors"
-          >
-            Blog
-          </Link>
-        )}
       </div>
     </FadeIn>
   );

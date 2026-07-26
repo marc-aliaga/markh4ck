@@ -24,37 +24,37 @@ const YOUTUBE_VIDEOS = [
   },
 ];
 
-// TODO: sustituye cada videoId por el vídeo explicativo real del módulo
+// TODO: añade el videoId real cuando publiques el vídeo de cada módulo
 const LEVELS = [
   {
     n: "01",
     title: "Entendiendo el lenguaje máquina",
     desc: "Compilación, ensamblador, hexadecimal y formatos PE/ELF.",
-    videoId: "dQw4w9WgXcQ",
+    videoId: null,
   },
   {
     n: "02",
     title: "Análisis estático y dinámico con IA",
     desc: "Debuggers y disassemblers usando LLMs como copiloto para analizar binarios mucho más rápido.",
-    videoId: "dQw4w9WgXcQ",
+    videoId: null,
   },
   {
     n: "03",
     title: "Cracking de software",
     desc: "Licencias, anti-debug y packers: cómo funcionan y cómo saltárselos.",
-    videoId: "dQw4w9WgXcQ",
+    videoId: null,
   },
   {
     n: "04",
     title: "Explotación binaria y malware",
     desc: "De la vulnerabilidad al exploit, y análisis de muestras de malware reales.",
-    videoId: "dQw4w9WgXcQ",
+    videoId: null,
   },
   {
     n: "05",
     title: "Proyecto final",
     desc: "Aplica todo lo aprendido en un reto completo y entra en la comunidad privada.",
-    videoId: "dQw4w9WgXcQ",
+    videoId: null,
   },
 ];
 
@@ -82,15 +82,29 @@ function LevelCard({ level }) {
         </div>
       </div>
       {showVideo && (
-        <div className="mt-6 aspect-video max-w-[480px] rounded-2xl overflow-hidden">
-          <iframe
-            className="w-full h-full"
-            src={`https://www.youtube-nocookie.com/embed/${level.videoId}`}
-            title={`Vídeo explicativo — ${level.title}`}
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
+        <div className="mt-6 max-w-[480px]">
+          {level.videoId ? (
+            <div className="aspect-video rounded-2xl overflow-hidden">
+              <iframe
+                className="w-full h-full"
+                src={`https://www.youtube-nocookie.com/embed/${level.videoId}`}
+                title={`Vídeo explicativo — ${level.title}`}
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          ) : (
+            <div className="aspect-video rounded-2xl border border-dashed border-white/10 flex flex-col items-center justify-center gap-2 text-center px-4">
+              <span className="text-2xl">🎬</span>
+              <p className="font-mono text-sm text-[#da7756] font-bold">
+                Próximamente
+              </p>
+              <p className="text-xs text-[#8a8a93]">
+                Estamos grabando el vídeo de este módulo.
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>
