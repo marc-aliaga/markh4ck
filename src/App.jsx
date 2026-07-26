@@ -4,6 +4,7 @@ import Home from "./components/Home";
 import Blog from "./components/Blog";
 import BlogArticle from "./components/BlogArticle";
 import Navbar from "./components/Navbar";
+import Recursos from "./components/Recursos";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogArticle />} />
+        <Route path="/recursos" element={<Recursos />} />
       </Routes>
     </BrowserRouter>
   );

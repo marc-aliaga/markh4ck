@@ -15,7 +15,11 @@ function sendLeadToSheet(data) {
     method: "POST",
     mode: "no-cors",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify({ ...data, fecha: new Date().toISOString() }),
+    body: JSON.stringify({
+      ...data,
+      origen: "quiz",
+      fecha: new Date().toISOString(),
+    }),
   }).catch(() => {});
 }
 
@@ -56,6 +60,7 @@ function LeadQuiz() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [redirecting, setRedirecting] = useState(false);
+  const [redirectUrl, setRedirectUrl] = useState(null);
 
   const current = QUESTIONS[step];
   const isLast = step === QUESTIONS.length - 1;
@@ -69,20 +74,42 @@ function LeadQuiz() {
       return;
     }
 
-    setRedirecting(true);
     sendLeadToSheet(nextAnswers);
     const params = new URLSearchParams({ utm_source: "vsl", ...nextAnswers });
+    const url = `${SKOOL_URL}?${params.toString()}`;
+    setRedirectUrl(url);
+    setRedirecting(true);
     setTimeout(() => {
-      window.location.href = `${SKOOL_URL}?${params.toString()}`;
-    }, 1200);
+      window.location.href = url;
+    }, 5000);
   };
 
   if (redirecting) {
     return (
-      <div className="w-full bg-[#131315] rounded-3xl border border-white/5 px-8 py-16 text-center">
-        <div className="w-10 h-10 mx-auto mb-4 rounded-full border-2 border-[#da7756] border-t-transparent animate-spin" />
-        <p className="text-lg font-medium text-white font-mono">
-          &gt; preparando_tu_acceso_a_de0aHacker...
+      <div className="w-full bg-[#131315] rounded-3xl border border-[#da7756]/30 px-8 py-14 text-center max-md:px-5 max-md:py-10 shadow-[0_0_80px_-20px_rgba(218,119,86,0.35)]">
+        <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#da7756]/10 border border-[#da7756]/40 mb-6">
+          <CheckIcon className="w-7 h-7 text-[#da7756]" />
+        </span>
+        <h3 className="text-3xl font-bold text-white max-md:text-2xl">
+          Ya tienes tu plaza en de0aHacker
+        </h3>
+        <p className="mt-4 text-lg text-[#8a8a93] max-w-[560px] mx-auto leading-relaxed max-md:text-base">
+          Partiendo de tu nivel —{" "}
+          <span className="text-white font-medium">{answers.nivel}</span>—
+          vas a tener las lecciones, los laboratorios de reversing con IA y
+          la comunidad que necesitas para conseguir tu objetivo:{" "}
+          <span className="text-white font-medium">{answers.objetivo}</span>.
+        </p>
+
+        <a
+          href={redirectUrl || "#"}
+          className="inline-block mt-8 bg-[#da7756] hover:bg-[#c2603f] transition-colors text-white font-bold text-lg px-10 py-4 rounded-2xl shadow-[0_0_40px_rgba(218,119,86,0.5)]"
+        >
+          Entrar a de0aHacker →
+        </a>
+
+        <p className="mt-4 text-xs font-mono text-[#6b6a66]">
+          &gt; te llevamos automáticamente en unos segundos...
         </p>
       </div>
     );
