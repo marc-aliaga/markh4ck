@@ -3,8 +3,8 @@ import Container from "./Container";
 import { FadeIn } from "./FadeIn";
 import { CheckIcon, LockIcon } from "./Icons";
 
-// Apertura: finales de agosto de 2026
-const LAUNCH_DATE = new Date(2026, 7, 31, 23, 59, 59);
+// Apertura: finales de octubre de 2026
+const LAUNCH_DATE = new Date(2026, 9, 31, 23, 59, 59);
 
 // TODO: pega aquí la URL de tu Google Apps Script (Deploy > Web app) para
 // guardar en tu Google Sheet los emails de la lista de espera.

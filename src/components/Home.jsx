@@ -28,32 +28,32 @@ const YOUTUBE_VIDEOS = [
 const LEVELS = [
   {
     n: "01",
-    title: "Entendiendo el lenguaje máquina",
-    desc: "Compilación, ensamblador, hexadecimal y formatos PE/ELF.",
+    title: "Arquitectura x86 y x64",
+    desc: "Registros y tipos de datos, conjunto de instrucciones, pila y llamadas a funciones, control de flujo, traducción de direcciones, interrupciones y excepciones.",
     videoId: null,
   },
   {
     n: "02",
-    title: "Análisis estático y dinámico con IA",
-    desc: "Debuggers y disassemblers usando LLMs como copiloto para analizar binarios mucho más rápido.",
+    title: "Arquitectura ARM",
+    desc: "Registros y modos, carga y almacenamiento (LDR/STR, LDM/STM), ramificación condicional, estado Thumb, switch-case y mecanismos del sistema.",
     videoId: null,
   },
   {
     n: "03",
-    title: "Cracking de software",
-    desc: "Licencias, anti-debug y packers: cómo funcionan y cómo saltárselos.",
+    title: "El kernel de Windows",
+    desc: "Memoria, llamadas al sistema, IRQL, procesos e hilos, APC/DPC, drivers e IRPs, con el análisis de rootkits reales x86 y x64.",
     videoId: null,
   },
   {
     n: "04",
-    title: "Explotación binaria y malware",
-    desc: "De la vulnerabilidad al exploit, y análisis de muestras de malware reales.",
+    title: "Depuración y automatización",
+    desc: "Debugger de Windows: comandos, breakpoints, inspección de procesos y módulos, scripting y extensiones con el SDK.",
     videoId: null,
   },
   {
     n: "05",
-    title: "Proyecto final",
-    desc: "Aplica todo lo aprendido en un reto completo y entra en la comunidad privada.",
+    title: "Ofuscación y desofuscación",
+    desc: "Ofuscación de datos y de flujo de control, herramientas de desofuscación, ejecución simbólica y un caso práctico resuelto paso a paso.",
     videoId: null,
   },
 ];
