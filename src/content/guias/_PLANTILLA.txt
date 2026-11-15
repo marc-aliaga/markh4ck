@@ -1,0 +1,29 @@
+COMO PUBLICAR UNA ENTRADA NUEVA EN /guias
+======================================
+
+1. Copia este bloque en un archivo nuevo:  src/content/guias/mi-slug.md
+   (el nombre del archivo, "mi-slug", es la URL: /guias/mi-slug)
+
+2. Deja las capturas en:  public/guias/mi-slug/
+   y enlázalas en el texto con  /guias/mi-slug/foto.png
+
+3. Guarda. Aparece sola en la web, sin tocar nada de código.
+
+------------------ copia desde aquí ------------------
+---
+title: "Título que se ve en la tarjeta y la cabecera"
+date: 2026-11-15
+category: "Active Directory"
+difficulty: "Media"
+os: "Windows"
+tags: [etiqueta1, etiqueta2, etiqueta3]
+excerpt: "Una o dos frases que resumen la entrada (se ve en la tarjeta)."
+featured: false
+---
+
+# Título
+
+Aquí empieza el contenido en Markdown…
+
+![descripción de la captura](/guias/mi-slug/foto.png)
+------------------ hasta aquí ------------------

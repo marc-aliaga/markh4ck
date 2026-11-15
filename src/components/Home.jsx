@@ -1,278 +1,345 @@
-import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { motion } from "framer-motion";
+import { Link, useLocation } from "react-router-dom";
 import Container from "./Container";
-import pranay from "../assets/pranay.jpg";
 import { FadeIn, FadeInStagger } from "./FadeIn";
-import { LockIcon } from "./Icons";
-import VslPlayer from "./VslPlayer";
-import LeadQuiz from "./LeadQuiz";
-import Faq from "./Faq";
+import VideoSections from "./VideoSections";
+import EntryList from "./EntryList";
 import Socials from "./Socials";
+import { GUIAS, HTB, FEATURED, SECTIONS } from "../data/content";
+import avatar from "../assets/pranay.jpg";
 
-const YOUTUBE_VIDEOS = [
+const YT_CHANNEL = "https://www.youtube.com/@MarkH4ck";
+const GITHUB = "https://github.com/marc-aliaga";
+
+const STATS = [
+  { value: "4.3K+", label: "suscriptores" },
+  { value: "134K+", label: "visualizaciones" },
+  { value: "39", label: "vídeos publicados" },
+];
+
+const TOPICS = [
+  { icon: "⚙️", title: "Reversing", desc: "Ingeniería inversa de binarios x86 y ARM con x64dbg, IDA Pro y Ghidra." },
+  { icon: "🔓", title: "Cracking & CTFs", desc: "Crackmes, licencias, anti-debug y retos de Root-Me resueltos paso a paso." },
+  { icon: "🏢", title: "Active Directory", desc: "Home labs y explotación de redes corporativas con Windows Server y Kali." },
+  { icon: "📦", title: "Hack The Box", desc: "Máquinas resueltas de principio a fin, documentadas con capturas y comandos." },
+];
+
+const PROJECTS = [
   {
-    id: "YYyjC55o7Dk",
-    title: "Crackeando un serial paso a paso (Ingeniería Inversa)",
+    name: "Assembly-Introduction",
+    lang: "Assembly",
+    desc: "Curso paso a paso sobre los fundamentos de la computación: desde operaciones con bits hasta cómo se comunican dos ordenadores.",
   },
   {
-    id: "l2LuTCvoC-g",
-    title: "Esto es lo que hay dentro de un .EXE",
+    name: "C_projects",
+    lang: "C",
+    desc: "Recopilación de herramientas y proyectos escritos en C.",
   },
   {
-    id: "slNbu0a65so",
-    title: "Aprende a crackear un programa desde 0 (CTF)",
+    name: "Blockchain-python",
+    lang: "Python",
+    desc: "Thela: una blockchain sencilla implementada desde cero en Python.",
+  },
+  {
+    name: "Quantitative-Finance",
+    lang: "TypeScript",
+    desc: "Gestión de riesgo, métodos de valoración y teoría de carteras con código interactivo.",
+  },
+  {
+    name: "ornstein-uhlenbeck-process",
+    lang: "Python",
+    desc: "Implementación completa del proceso estocástico de Ornstein–Uhlenbeck: simulación y visualización.",
+  },
+  {
+    name: "Valuation-Methods",
+    lang: "Python",
+    desc: "Toolkit de valoración de empresas: DCF con CAPM, equivalente cierto y modelo dinámico de dividendos.",
   },
 ];
 
-// TODO: añade el videoId real cuando publiques el vídeo de cada módulo
-const LEVELS = [
-  {
-    n: "01",
-    title: "Arquitectura x86 y x64",
-    desc: "Registros y tipos de datos, conjunto de instrucciones, pila y llamadas a funciones, control de flujo, traducción de direcciones, interrupciones y excepciones.",
-    videoId: null,
-  },
-  {
-    n: "02",
-    title: "Arquitectura ARM",
-    desc: "Registros y modos, carga y almacenamiento (LDR/STR, LDM/STM), ramificación condicional, estado Thumb, switch-case y mecanismos del sistema.",
-    videoId: null,
-  },
-  {
-    n: "03",
-    title: "El kernel de Windows",
-    desc: "Memoria, llamadas al sistema, IRQL, procesos e hilos, APC/DPC, drivers e IRPs, con el análisis de rootkits reales x86 y x64.",
-    videoId: null,
-  },
-  {
-    n: "04",
-    title: "Depuración y automatización",
-    desc: "Debugger de Windows: comandos, breakpoints, inspección de procesos y módulos, scripting y extensiones con el SDK.",
-    videoId: null,
-  },
-  {
-    n: "05",
-    title: "Ofuscación y desofuscación",
-    desc: "Ofuscación de datos y de flujo de control, herramientas de desofuscación, ejecución simbólica y un caso práctico resuelto paso a paso.",
-    videoId: null,
-  },
-];
+const LANG_COLOR = {
+  Assembly: "#6E4C13",
+  C: "#555555",
+  Python: "#3572A5",
+  TypeScript: "#3178c6",
+};
 
-function LevelCard({ level }) {
-  const [showVideo, setShowVideo] = useState(false);
+const FEATURED_WT = FEATURED.slice(0, 2);
 
+function SectionTitle({ kicker, title, children }) {
   return (
-    <div className="group bg-[#131315] rounded-3xl border border-white/5 hover:border-[#da7756]/40 transition-colors p-8 max-md:p-6">
-      <div className="flex items-center gap-8 max-md:flex-col max-md:items-start max-md:gap-4">
-        <span className="text-6xl font-mono font-extrabold text-white/10 group-hover:text-[#da7756]/30 transition-colors shrink-0 max-md:text-4xl">
-          {level.n}
-        </span>
-        <div className="flex-1 min-w-0">
-          <h3 className="text-2xl font-bold text-white mb-1">
-            {level.title}
-          </h3>
-          <p className="text-[#8a8a93] leading-relaxed">{level.desc}</p>
-          <button
-            type="button"
-            onClick={() => setShowVideo((v) => !v)}
-            className="mt-4 inline-flex items-center gap-2 text-sm font-mono text-[#da7756] hover:text-[#c2603f] transition-colors"
-          >
-            {showVideo ? "▲ ocultar vídeo del módulo" : "▶ ver vídeo del módulo"}
-          </button>
-        </div>
+    <FadeIn>
+      <div className="mb-8 max-md:mb-6">
+        <p className="font-mono text-sm text-[#39ff14] mb-2">{kicker}</p>
+        <h2 className="text-4xl leading-tight max-md:text-2xl">{title}</h2>
+        {children}
       </div>
-      {showVideo && (
-        <div className="mt-6 max-w-[480px]">
-          {level.videoId ? (
-            <div className="aspect-video rounded-2xl overflow-hidden">
-              <iframe
-                className="w-full h-full"
-                src={`https://www.youtube-nocookie.com/embed/${level.videoId}`}
-                title={`Vídeo explicativo — ${level.title}`}
-                loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          ) : (
-            <div className="aspect-video rounded-2xl border border-dashed border-white/10 flex flex-col items-center justify-center gap-2 text-center px-4">
-              <span className="text-2xl">🎬</span>
-              <p className="font-mono text-sm text-[#da7756] font-bold">
-                Próximamente
-              </p>
-              <p className="text-xs text-[#8a8a93]">
-                Estamos grabando el vídeo de este módulo.
-              </p>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+    </FadeIn>
   );
 }
 
 function Home() {
-  const [videoFinished, setVideoFinished] = useState(false);
-  const quizRef = useRef(null);
+  const { hash } = useLocation();
 
-  const handleVideoFinish = () => {
-    setVideoFinished(true);
-    setTimeout(() => {
-      quizRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  useEffect(() => {
+    if (!hash) return;
+    const t = setTimeout(() => {
+      document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "smooth" });
     }, 100);
-  };
+    return () => clearTimeout(t);
+  }, [hash]);
 
   return (
-    <Container id="home">
-      {/* Hero + VSL */}
-      <FadeIn>
-        <div
-          id="vsl"
-          className="text-center max-w-[820px] mx-auto pt-20 pb-14 max-md:pt-10 max-md:pb-8"
-        >
-          <h1 className="text-8xl font-extrabold tracking-tight leading-[1.02] max-md:text-[46px] max-md:leading-[1.05]">
-            De 0 a{" "}
-            <span className="inline-block bg-[#da7756] text-[#0a0a0a] px-4 rounded-2xl -rotate-1 max-md:px-2 max-md:rounded-xl">
-              Hacker
-            </span>
+    <Container>
+      {/* Hero */}
+      <section className="grid grid-cols-[1fr_auto] items-center gap-12 pt-16 pb-20 max-md:grid-cols-1 max-md:pt-8 max-md:pb-12 max-md:gap-8">
+        <div className="max-md:order-2">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="font-mono text-[#39ff14] mb-4"
+          >
+            <span className="text-[#8a8a93]">$ whoami</span>
             <br />
-            con IA
-          </h1>
-          <p className="mt-8 text-2xl text-[#8a8a93] max-w-[680px] mx-auto max-md:text-lg">
-            Mira el vídeo de 5 minutos y descubre cómo pasar de cero a
-            analizar binarios y explotar sistemas, usando la IA como
-            copiloto.
-          </p>
+            &gt; Marc Aliaga — aka Mark H4ck
+            <span className="text-[#ff1f3d] animate-blink">_</span>
+          </motion.p>
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+            className="text-7xl leading-[1.05] max-md:text-[40px] max-md:leading-[1.1]"
+          >
+            Reversing, AD y{" "}
+            <span className="bg-gradient-to-r from-[#39ff14] to-[#ff1f3d] bg-clip-text text-transparent">
+              Hack The Box
+            </span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.25 }}
+            className="mt-6 text-xl text-[#8a8a93] max-w-[620px] leading-relaxed max-md:text-base"
+          >
+            Soy Marc, de España 🇪🇸. Este es mi rincón para documentar lo que voy
+            aprendiendo de ciberseguridad: rompo binarios, monto laboratorios de
+            Active Directory y resuelvo máquinas de Hack The Box. Todo lo que
+            descubro acaba aquí escrito, paso a paso.
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="mt-8 flex flex-wrap gap-3"
+          >
+            <Link
+              to="/htb"
+              className="bg-[#39ff14] hover:bg-[#2fd60f] transition-colors text-[#030303] font-bold px-7 py-4 rounded-2xl shadow-[0_0_40px_-6px_rgba(57,255,20,0.6)]"
+            >
+              Ver walkthroughs de HTB
+            </Link>
+            <Link
+              to="/guias"
+              className="border border-white/10 hover:border-[#39ff14]/50 transition-colors text-white font-bold px-7 py-4 rounded-2xl"
+            >
+              Leer mis guías
+            </Link>
+          </motion.div>
         </div>
-      </FadeIn>
 
-      <FadeIn>
-        <div className="max-w-[640px] mx-auto">
-          <VslPlayer onFinish={handleVideoFinish} />
-        </div>
-      </FadeIn>
-
-      <FadeIn>
-        <div className="flex items-center justify-center gap-3 mt-8 mb-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.9 }}
+          className="relative w-[320px] h-[320px] max-md:w-[180px] max-md:h-[180px] max-md:order-1 max-md:mx-auto"
+        >
+          <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-[#39ff14] to-[#ff1f3d] blur-md opacity-70" />
           <img
-            src={pranay}
+            src={avatar}
             alt="Mark H4ck"
-            className="w-10 h-10 rounded-full object-cover grayscale"
+            className="relative w-full h-full rounded-full object-cover border-4 border-[#030303]"
           />
-          <span className="text-sm font-mono text-[#8a8a93]">
-            Por <span className="font-semibold text-white">Mark H4ck</span>{" "}
-            · +4.000 seguidores
-          </span>
-        </div>
-      </FadeIn>
+        </motion.div>
+      </section>
 
-      <div ref={quizRef} className="pt-6 scroll-mt-6">
-        {videoFinished ? (
-          <FadeIn>
-            <LeadQuiz />
-          </FadeIn>
-        ) : (
-          <div className="w-full bg-[#131315] rounded-3xl border border-dashed border-white/10 px-8 py-12 text-center">
-            <LockIcon className="w-8 h-8 text-[#da7756] mx-auto mb-3" />
-            <p className="text-white font-medium font-mono">
-              &gt; termina_el_video_para_desbloquear_tu_acceso
-            </p>
-            <p className="text-sm text-[#8a8a93] mt-2">
-              Al acabar, te haremos 4 preguntas rápidas para personalizar tu
-              entrada a de0aHacker.
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* Sistema de niveles */}
-      <FadeIn>
-        <div className="mt-24 mb-10 text-center max-md:mt-16">
-          <span className="text-sm font-mono text-[#da7756]">
-            &gt; temario
-          </span>
-          <h2 className="text-5xl font-extrabold tracking-tight mt-2 max-md:text-3xl">
-            Nuestro sistema de niveles
-          </h2>
-        </div>
-      </FadeIn>
-      <FadeInStagger className="flex flex-col gap-3 mb-4">
-        {LEVELS.map((level) => (
-          <FadeIn key={level.n}>
-            <LevelCard level={level} />
-          </FadeIn>
-        ))}
-      </FadeInStagger>
-
-      {/* Prueba social */}
-      <FadeIn>
-        <div className="mt-16 mb-4 bg-[#131315] rounded-3xl border border-white/5 p-12 text-center max-md:p-8">
-          <p className="font-mono text-[#da7756] text-2xl max-md:text-lg">
-            &gt; Si no puedes ver el Assembly, no conoces el programa.
-          </p>
-          <p className="mt-3 text-[#8a8a93] text-lg max-md:text-base">
-            Comparto laboratorios de reversing y low-level con una comunidad
-            de más de 4.000 apasionados por la tecnología.
-          </p>
-        </div>
-      </FadeIn>
-
-      <FadeInStagger className="grid gap-4 grid-cols-3 max-md:grid-cols-1 mb-4">
-        {YOUTUBE_VIDEOS.map((video) => (
-          <FadeIn key={video.id}>
-            <div className="h-full bg-[#131315] rounded-3xl border border-white/5 overflow-hidden">
-              <div className="aspect-video">
-                <iframe
-                  className="w-full h-full"
-                  src={`https://www.youtube-nocookie.com/embed/${video.id}`}
-                  title={video.title}
-                  loading="lazy"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-              <p className="text-sm text-[#8a8a93] px-4 py-3 truncate">
-                {video.title}
-              </p>
+      {/* Stats */}
+      <FadeInStagger className="grid grid-cols-3 gap-4 mb-24 max-md:mb-16 max-md:gap-2">
+        {STATS.map((s) => (
+          <FadeIn key={s.label}>
+            <div className="bg-[#0d0d0d] border border-white/5 rounded-3xl p-6 text-center max-md:p-4">
+              <p className="font-bebas text-4xl font-bold text-white max-md:text-xl">{s.value}</p>
+              <p className="mt-1 font-mono text-sm text-[#8a8a93] max-md:text-xs">{s.label}</p>
             </div>
           </FadeIn>
         ))}
       </FadeInStagger>
 
-      {/* FAQ */}
-      <FadeIn>
-        <div className="mt-8 mb-4">
-          <Faq />
-        </div>
-      </FadeIn>
+      {/* Trabajo destacado */}
+      {FEATURED_WT.length > 0 && (
+        <section className="mb-24 max-md:mb-16">
+          <SectionTitle kicker="// destacado" title="Lo último que he roto" />
+          <FadeInStagger faster className="grid grid-cols-3 gap-4 max-lg:grid-cols-1">
+            {FEATURED_WT.map((w) => {
+              const sec = SECTIONS[w.section];
+              return (
+                <FadeIn key={`${w.section}/${w.slug}`}>
+                  <Link
+                    to={`${sec.route}/${w.slug}`}
+                    className="neon-card red group flex h-full flex-col justify-between rounded-3xl p-7 min-h-[220px]"
+                  >
+                    <div>
+                      <span className="font-term text-xs text-[#ff1f3d]">
+                        {sec.label.toLowerCase()} · {w.date ? new Date(w.date).getFullYear() : ""}
+                      </span>
+                      <h3 className="mt-3 font-dirt text-2xl leading-tight txt-grunge group-hover:text-[#39ff14] transition-colors">
+                        {w.title}
+                      </h3>
+                    </div>
+                    <p className="mt-5 text-[#8a8a93] leading-relaxed">{w.excerpt}</p>
+                  </Link>
+                </FadeIn>
+              );
+            })}
+            <FadeIn>
+              <a
+                href={`${YT_CHANNEL}?sub_confirmation=1`}
+                target="_blank"
+                rel="noreferrer"
+                className="neon-card group flex h-full flex-col justify-between rounded-3xl p-7 min-h-[220px]"
+              >
+                <div>
+                  <span className="font-term text-xs text-[#39ff14]">youtube · @MarkH4ck</span>
+                  <h3 className="mt-3 font-dirt text-2xl leading-tight txt-acid">
+                    Vídeos nuevos cada semana
+                  </h3>
+                </div>
+                <p className="mt-5 text-[#8a8a93] leading-relaxed">
+                  Reversing, pentesting de Active Directory y retos resueltos paso
+                  a paso. Suscríbete para no perderte ninguno. ▶
+                </p>
+              </a>
+            </FadeIn>
+          </FadeInStagger>
+        </section>
+      )}
 
-      {/* CTA final */}
-      <FadeIn>
-        <div className="mb-4 bg-[#131315] rounded-3xl border border-[#da7756]/30 p-14 text-center max-md:p-8 shadow-[0_0_80px_-20px_rgba(218,119,86,0.35)]">
-          <h2 className="text-4xl font-extrabold text-white max-md:text-2xl">
-            ¡Empieza tu camino como hacker hoy!
-          </h2>
-          <p className="mt-2 text-[#8a8a93] text-lg max-md:text-base">
-            Mira el vídeo, responde 4 preguntas y entra a de0aHacker.
+      {/* Guías */}
+      <section id="guias" className="mb-24 max-md:mb-16 scroll-mt-24">
+        <SectionTitle kicker="// /guias" title="Guías">
+          <p className="mt-2 text-[#8a8a93] max-w-2xl">{SECTIONS.guias.blurb}</p>
+        </SectionTitle>
+        <EntryList entries={GUIAS.slice(0, 4)} />
+        {GUIAS.length > 4 && (
+          <div className="mt-6">
+            <Link to="/guias" className="font-term text-sm text-[#39ff14] hover:text-[#ff1f3d]">
+              ver todas las guías →
+            </Link>
+          </div>
+        )}
+      </section>
+
+      {/* HTB */}
+      <section id="htb" className="mb-24 max-md:mb-16 scroll-mt-24">
+        <SectionTitle kicker="// /htb" title="Hack The Box">
+          <p className="mt-2 text-[#8a8a93] max-w-2xl">{SECTIONS.htb.blurb}</p>
+        </SectionTitle>
+        <EntryList entries={HTB.slice(0, 4)} />
+        {HTB.length > 4 && (
+          <div className="mt-6">
+            <Link to="/htb" className="font-term text-sm text-[#ff1f3d] hover:text-[#39ff14]">
+              ver todos los walkthroughs →
+            </Link>
+          </div>
+        )}
+      </section>
+
+      {/* Últimos vídeos */}
+      <section id="videos" className="mb-24 max-md:mb-16 scroll-mt-24">
+        <SectionTitle kicker="// youtube.com/@MarkH4ck" title="Vídeos por temática">
+          <p className="mt-2 text-[#8a8a93]">
+            Cada vídeo abre su propia página con el reproductor arriba y el
+            walkthrough paso a paso debajo. Haz clic en cualquier card.
           </p>
-          <Link
-            to="/academia"
-            className="inline-block mt-8 bg-[#da7756] hover:bg-[#c2603f] transition-colors text-white font-bold text-lg px-10 py-5 rounded-2xl shadow-[0_0_40px_rgba(218,119,86,0.5)]"
+        </SectionTitle>
+        <VideoSections />
+        <div className="mt-10 text-center">
+          <a
+            href={`${YT_CHANNEL}/videos`}
+            target="_blank"
+            rel="noreferrer"
+            className="font-term text-[#39ff14] hover:text-[#ff1f3d] transition-colors"
           >
-            Acceder a la academia →
-          </Link>
+            ver todos los vídeos en YouTube →
+          </a>
         </div>
-      </FadeIn>
+      </section>
 
-      {/* Footer */}
-      <FadeIn>
-        <div className="mb-6 bg-[#131315] rounded-3xl border border-white/5 p-10 max-md:p-6">
-          <Socials />
-          <p className="text-center text-white/30 text-sm mt-6 font-mono">
-            © {new Date().getFullYear()} de0aHacker · por Mark H4ck
-          </p>
+      {/* Sobre mí / temas */}
+      <section className="mb-24 max-md:mb-16">
+        <SectionTitle kicker="// sobre mí" title="En qué ando metido" />
+        <FadeInStagger faster className="grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1">
+          {TOPICS.map((t) => (
+            <FadeIn key={t.title}>
+              <div className="h-full bg-[#0d0d0d] border border-white/5 hover:border-[#ff1f3d]/40 transition-colors rounded-3xl p-6">
+                <span className="text-3xl">{t.icon}</span>
+                <h3 className="mt-4 text-xl leading-tight">{t.title}</h3>
+                <p className="mt-2 text-[#8a8a93] leading-relaxed">{t.desc}</p>
+              </div>
+            </FadeIn>
+          ))}
+        </FadeInStagger>
+      </section>
+
+      {/* Proyectos GitHub */}
+      <section id="proyectos" className="mb-24 max-md:mb-16 scroll-mt-24">
+        <SectionTitle kicker="// github.com/marc-aliaga" title="Proyectos en GitHub" />
+        <FadeInStagger faster className="grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1">
+          {PROJECTS.map((p) => (
+            <FadeIn key={p.name}>
+              <a
+                href={`${GITHUB}/${p.name}`}
+                target="_blank"
+                rel="noreferrer"
+                className="h-full flex flex-col bg-[#0d0d0d] border border-white/5 hover:border-[#39ff14]/40 transition-colors rounded-3xl p-6"
+              >
+                <p className="font-mono font-bold text-white break-all">
+                  <span className="text-[#8a8a93]">~/</span>
+                  {p.name}
+                </p>
+                <p className="mt-3 text-[#8a8a93] leading-relaxed flex-1">{p.desc}</p>
+                <p className="mt-4 flex items-center gap-2 font-mono text-xs text-[#8a8a93]">
+                  <span
+                    className="w-3 h-3 rounded-full"
+                    style={{ background: LANG_COLOR[p.lang] || "#888" }}
+                  />
+                  {p.lang}
+                </p>
+              </a>
+            </FadeIn>
+          ))}
+        </FadeInStagger>
+        <div className="mt-6 text-center">
+          <a
+            href={GITHUB}
+            target="_blank"
+            rel="noreferrer"
+            className="font-mono text-[#39ff14] hover:text-[#ff1f3d] transition-colors"
+          >
+            ver perfil completo en GitHub →
+          </a>
         </div>
-      </FadeIn>
+      </section>
+
+      {/* Redes */}
+      <section id="contacto" className="mb-10 scroll-mt-24">
+        <SectionTitle kicker="// contacto" title="Sígueme" />
+        <Socials />
+        <p className="mt-10 mb-4 text-center font-mono text-xs text-[#8a8a93]">
+          © {new Date().getFullYear()} Mark H4ck · hecho con café y ensamblador
+        </p>
+      </section>
     </Container>
   );
 }

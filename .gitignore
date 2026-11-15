@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Archivos de trabajo / fuentes locales (no van al repo)
+Walkthrugt/
+Gemini_Generated_Image_*.jpg
+Unatitled.png
+Untitlesd.png
+
+# Vídeos pesados (no al repo; superan el límite de GitHub)
+public/videos/

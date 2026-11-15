@@ -1,21 +1,74 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@500;700;800&family=Rubik+Dirt&family=Rubik+Wet+Paint&family=Bebas+Neue&family=JetBrains+Mono:wght@400;600&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
   font-family: "Inter", sans-serif;
-  background-color: #0a0a0a;
+  background-color: #030303;
   background-image:
-    radial-gradient(ellipse 70% 45% at 50% -5%, rgba(218, 119, 86, 0.28), transparent 60%),
-    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
-  background-size: auto, 44px 44px, 44px 44px;
+    radial-gradient(ellipse 55% 40% at 0% 0%, rgba(255, 31, 61, 0.18), transparent 60%),
+    radial-gradient(ellipse 55% 40% at 100% 10%, rgba(57, 255, 20, 0.12), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 50% 110%, rgba(57, 255, 20, 0.10), transparent 60%),
+    linear-gradient(to right, rgba(57, 255, 20, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(57, 255, 20, 0.035) 1px, transparent 1px);
+  background-size: auto, auto, auto, 44px 44px, 44px 44px;
   background-attachment: fixed;
   color: #fff;
   font-size: 14px;
   line-height: 20px;
   font-weight: 500;
+  position: relative;
+}
+
+/* Scanline / CRT overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.035) 0px,
+    rgba(255, 255, 255, 0.035) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: overlay;
+  opacity: 0.5;
+  animation: scanline-drift 9s linear infinite;
+}
+
+@keyframes scanline-drift {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 120px; }
+}
+
+::selection {
+  background: #39ff14;
+  color: #030303;
+}
+
+/* Neon scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #030303;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff1f3d, #39ff14);
+  border-radius: 99px;
+}
+
+h1,
+h2,
+h3,
+h5 {
+  font-family: "Bebas Neue", "Inter", sans-serif;
+  letter-spacing: 0.01em;
 }
 
 h1 {
@@ -23,8 +76,8 @@ h1 {
   margin-bottom: 0px;
   font-size: 64px;
   line-height: 72px;
-  font-weight: 500;
-  letter-spacing: -0.03em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 h2 {
@@ -32,8 +85,8 @@ h2 {
   margin-bottom: 0px;
   font-size: 56px;
   line-height: 64px;
-  font-weight: 500;
-  letter-spacing: -0.03em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 h3 {
@@ -41,8 +94,8 @@ h3 {
   margin-bottom: 0px;
   font-size: 48px;
   line-height: 56px;
-  font-weight: 500;
-  letter-spacing: -0.03em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 h5 {
@@ -50,7 +103,7 @@ h5 {
     margin-bottom: 0px;
     font-size: 32px;
     line-height: 40px;
-    font-weight: 500;
+    font-weight: 700;
     letter-spacing: -0.01em;
 }
 
@@ -63,3 +116,287 @@ h5 {
 .animate-blink {
   animation: blink 1s infinite;
 }
+
+/* Glitch text — usage: <span class="glitch" data-text="Hacker">Hacker</span> */
+.glitch {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  -webkit-background-clip: inherit;
+  background-clip: inherit;
+}
+
+.glitch::before {
+  color: #ff1f3d;
+  mix-blend-mode: screen;
+  animation: glitch-shift-1 4.5s infinite steps(1);
+  clip-path: inset(0 0 0 0);
+}
+
+.glitch::after {
+  color: #39ff14;
+  mix-blend-mode: screen;
+  animation: glitch-shift-2 4.5s infinite steps(1);
+  clip-path: inset(0 0 0 0);
+}
+
+@keyframes glitch-shift-1 {
+  0%, 92%, 100% { transform: translate(0, 0); clip-path: inset(0 0 0 0); opacity: 0; }
+  93% { transform: translate(-3px, 1px); clip-path: inset(10% 0 60% 0); opacity: 0.8; }
+  94% { transform: translate(2px, -1px); clip-path: inset(60% 0 5% 0); opacity: 0.8; }
+  95% { transform: translate(-2px, 0); clip-path: inset(30% 0 40% 0); opacity: 0.8; }
+  96%, 98% { transform: translate(0, 0); opacity: 0; }
+}
+
+@keyframes glitch-shift-2 {
+  0%, 92%, 100% { transform: translate(0, 0); clip-path: inset(0 0 0 0); opacity: 0; }
+  93% { transform: translate(3px, -1px); clip-path: inset(50% 0 15% 0); opacity: 0.8; }
+  94% { transform: translate(-2px, 1px); clip-path: inset(5% 0 70% 0); opacity: 0.8; }
+  95% { transform: translate(2px, 0); clip-path: inset(35% 0 35% 0); opacity: 0.8; }
+  96%, 98% { transform: translate(0, 0); opacity: 0; }
+}
+
+/* Subtle neon-sign flicker for badges/labels */
+@keyframes neon-flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.4; }
+  94% { opacity: 1; }
+  95% { opacity: 0.6; }
+  96% { opacity: 1; }
+}
+
+.neon-flicker {
+  animation: neon-flicker 5s infinite;
+}
+
+/* Makes a 16:9 YouTube iframe cover its container, like object-fit: cover */
+.yt-cover {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.yt-cover iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 56.25vw; /* 16:9 */
+  min-height: 100%;
+  min-width: 177.78vh; /* 16:9 */
+  transform: translate(-50%, -50%);
+}
+
+/* Hologram scan sweep for framed media */
+@keyframes hologram-sweep {
+  0% { transform: translateY(-120%); opacity: 0; }
+  15% { opacity: 0.6; }
+  50% { opacity: 0.15; }
+  85% { opacity: 0.6; }
+  100% { transform: translateY(120%); opacity: 0; }
+}
+
+.hologram-sweep {
+  animation: hologram-sweep 5s ease-in-out infinite;
+}
+
+/* ---------- Estilo "miniatura" (grunge + neón) ---------- */
+.font-dirt { font-family: "Rubik Dirt", "Bebas Neue", sans-serif; }
+.font-drip { font-family: "Rubik Wet Paint", "Bebas Neue", sans-serif; }
+.font-bebas { font-family: "Bebas Neue", "Inter", sans-serif; }
+.font-term { font-family: "JetBrains Mono", ui-monospace, monospace; }
+
+/* Texto blanco desgastado con contorno negro y halo rojo */
+.txt-grunge {
+  color: #f3f3f3;
+  text-shadow:
+    3px 3px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
+    0 0 18px rgba(255, 31, 61, 0.55);
+}
+/* Verde ácido con contorno negro y glow */
+.txt-acid {
+  color: #39ff14;
+  text-shadow:
+    3px 3px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
+    0 0 22px rgba(57, 255, 20, 0.7);
+}
+.txt-blood {
+  color: #ff1f3d;
+  text-shadow: 2px 2px 0 #000, 0 0 18px rgba(255, 31, 61, 0.7);
+}
+
+/* Trazo de pincel bajo un título */
+.brush-underline { position: relative; display: inline-block; }
+.brush-underline::after {
+  content: "";
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  bottom: -10px;
+  height: 10px;
+  border-radius: 999px 40% 999px 30%;
+  background: currentColor;
+  transform: skewX(-18deg) rotate(-1.5deg);
+  box-shadow: 0 0 16px currentColor;
+  opacity: 0.9;
+}
+
+/* Etiqueta tipo sticker inclinado (como "HACKING ÉTICO") */
+.sticker {
+  display: inline-block;
+  transform: rotate(-3deg) skewX(-6deg);
+  background: #050505;
+  border: 2px solid #ff1f3d;
+  box-shadow: 0 0 0 2px #000, 0 0 22px rgba(255, 31, 61, 0.55);
+}
+
+/* Tarjeta con borde neón */
+.neon-card {
+  background: linear-gradient(180deg, rgba(20, 20, 20, 0.92), rgba(6, 6, 6, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: border-color .3s, box-shadow .3s, transform .3s;
+}
+.neon-card:hover {
+  border-color: rgba(57, 255, 20, 0.55);
+  box-shadow: 0 0 0 1px rgba(57, 255, 20, 0.25), 0 0 40px -8px rgba(57, 255, 20, 0.45);
+  transform: translateY(-3px);
+}
+.neon-card.red:hover {
+  border-color: rgba(255, 31, 61, 0.6);
+  box-shadow: 0 0 0 1px rgba(255, 31, 61, 0.25), 0 0 40px -8px rgba(255, 31, 61, 0.5);
+}
+
+/* Ventana de terminal estilo Kali */
+.term-window {
+  background: rgba(3, 8, 3, 0.92);
+  border: 2px solid rgba(57, 255, 20, 0.7);
+  border-radius: 12px;
+  box-shadow: 0 0 30px -4px rgba(57, 255, 20, 0.55), inset 0 0 30px rgba(57, 255, 20, 0.06);
+}
+
+/* Lluvia matrix (canvas fijo) */
+.matrix-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.16;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .matrix-canvas { display: none; }
+}
+
+/* ---------- Prosa de los walkthroughs (Markdown) ---------- */
+.wt-prose {
+  color: #c9c9d1;
+  font-size: 16px;
+  line-height: 1.75;
+}
+.wt-prose > *:first-child { margin-top: 0; }
+
+.wt-prose h1,
+.wt-prose h2,
+.wt-prose h3,
+.wt-prose h4 {
+  font-family: "Bebas Neue", "Inter", sans-serif;
+  color: #fff;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+.wt-prose h2 {
+  margin: 2.4em 0 0.8em;
+  font-size: 30px;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid rgba(57, 255, 20, 0.2);
+  color: #39ff14;
+  text-shadow: 0 0 18px rgba(57, 255, 20, 0.35);
+}
+.wt-prose h3 {
+  margin: 1.8em 0 0.6em;
+  font-size: 23px;
+  color: #ff1f3d;
+}
+.wt-prose h4 { margin: 1.4em 0 0.5em; font-size: 19px; color: #fff; }
+
+.wt-prose p { margin: 1em 0; }
+.wt-prose a { color: #39ff14; text-decoration: underline; text-underline-offset: 3px; }
+.wt-prose a:hover { color: #ff1f3d; }
+.wt-prose strong { color: #fff; font-weight: 700; }
+.wt-prose em { color: #b8b8c0; }
+
+.wt-prose ul,
+.wt-prose ol { margin: 1em 0; padding-left: 1.4em; }
+.wt-prose li { margin: 0.4em 0; }
+.wt-prose ul li::marker { color: #39ff14; }
+.wt-prose ol li::marker { color: #ff1f3d; font-family: "JetBrains Mono", monospace; }
+
+/* código inline */
+.wt-prose code {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.86em;
+  background: rgba(57, 255, 20, 0.08);
+  border: 1px solid rgba(57, 255, 20, 0.18);
+  color: #7dffa0;
+  padding: 0.12em 0.4em;
+  border-radius: 5px;
+  word-break: break-word;
+}
+
+/* bloques de código tipo terminal */
+.wt-prose pre {
+  margin: 1.4em 0;
+  background: rgba(3, 8, 3, 0.95);
+  border: 1px solid rgba(57, 255, 20, 0.35);
+  border-radius: 10px;
+  padding: 1.1em 1.2em;
+  overflow-x: auto;
+  box-shadow: inset 0 0 30px rgba(57, 255, 20, 0.05),
+    0 0 24px -12px rgba(57, 255, 20, 0.5);
+}
+.wt-prose pre code {
+  background: none;
+  border: none;
+  color: #d7ffe0;
+  padding: 0;
+  font-size: 0.85em;
+  line-height: 1.6;
+}
+
+.wt-prose blockquote {
+  margin: 1.4em 0;
+  padding: 0.6em 1.2em;
+  border-left: 3px solid #39ff14;
+  background: rgba(57, 255, 20, 0.05);
+  border-radius: 0 8px 8px 0;
+  color: #b8b8c0;
+}
+.wt-prose blockquote p { margin: 0.4em 0; }
+
+.wt-prose hr {
+  margin: 2.5em 0;
+  border: none;
+  border-top: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+/* tablas */
+.wt-prose th,
+.wt-prose td {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.6em 0.9em;
+  text-align: left;
+}
+.wt-prose th {
+  background: rgba(57, 255, 20, 0.08);
+  color: #39ff14;
+  font-weight: 600;
+}
+.wt-prose tr:nth-child(even) td { background: rgba(255, 255, 255, 0.02); }

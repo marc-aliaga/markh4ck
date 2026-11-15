@@ -5,6 +5,7 @@ export default {
     extend: {
       fontFamily: {
         inter: ["Inter", "sans"],
+        orbitron: ["Orbitron", "sans-serif"],
       },
       screens: {
         mdd: "991px",

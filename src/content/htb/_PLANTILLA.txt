@@ -1,0 +1,29 @@
+COMO PUBLICAR UNA ENTRADA NUEVA EN /htb
+======================================
+
+1. Copia este bloque en un archivo nuevo:  src/content/htb/mi-slug.md
+   (el nombre del archivo, "mi-slug", es la URL: /htb/mi-slug)
+
+2. Deja las capturas en:  public/htb/mi-slug/
+   y enlázalas en el texto con  /htb/mi-slug/foto.png
+
+3. Guarda. Aparece sola en la web, sin tocar nada de código.
+
+------------------ copia desde aquí ------------------
+---
+title: "Título que se ve en la tarjeta y la cabecera"
+date: 2026-11-15
+category: "HTB"
+difficulty: "Media"
+os: "Windows"
+tags: [etiqueta1, etiqueta2, etiqueta3]
+excerpt: "Una o dos frases que resumen la entrada (se ve en la tarjeta)."
+featured: false
+---
+
+# Título
+
+Aquí empieza el contenido en Markdown…
+
+![descripción de la captura](/htb/mi-slug/foto.png)
+------------------ hasta aquí ------------------

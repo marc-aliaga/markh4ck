@@ -7,7 +7,7 @@ const socialData = [
   },
   {
     name: "github",
-    link: "https://github.com/markh4ck",
+    link: "https://github.com/marc-aliaga",
   },
   {
     name: "Discord ",
@@ -21,7 +21,9 @@ function Socials() {
         <a
           key={social.name}
           href={social.link}
-          className="flex w-full min-h-[56px] justify-center items-center bg-white/5 hover:bg-white/10 transition-colors duration-300 ease-[ease-out] text-white text-lg leading-6 text-center tracking-[-0.01em] px-6 py-4 rounded-[99px]"
+          target="_blank"
+          rel="noreferrer"
+          className="flex w-full min-h-[56px] justify-center items-center bg-white/5 border border-white/5 hover:border-[#39ff14]/50 hover:bg-white/10 hover:shadow-[0_0_25px_-8px_rgba(57,255,20,0.6)] transition-all duration-300 ease-[ease-out] text-white text-lg leading-6 text-center tracking-[-0.01em] px-6 py-4 rounded-[99px]"
         >
           {social.name}
         </a>
