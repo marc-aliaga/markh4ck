@@ -119,6 +119,9 @@ function build(sectionKey, files) {
         tags: Array.isArray(data.tags) ? data.tags : [],
         excerpt: data.excerpt || "",
         featured: data.featured === true,
+        repo: data.repo || "",
+        video: data.video || "",
+        machine: data.machine || "",
       };
     })
     .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));

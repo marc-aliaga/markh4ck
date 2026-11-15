@@ -19,9 +19,17 @@ os: "Windows"
 tags: [etiqueta1, etiqueta2, etiqueta3]
 excerpt: "Una o dos frases que resumen la entrada (se ve en la tarjeta)."
 featured: false
+repo: ""        # (opcional) link al repo de GitHub con el código/notas
+video: ""       # (opcional) link al vídeo de YouTube; vacío = "próximamente"
+machine: ""     # (opcional) link al logro de la máquina resuelta en HTB
 ---
 
 # Título
+
+> Deja la estructura: cada "## N. Fase" se convierte en una entrada del menú
+> de fases de la izquierda. Usa ## para fases y ### para subpasos.
+
+## 1. Reconocimiento
 
 Aquí empieza el contenido en Markdown…
 

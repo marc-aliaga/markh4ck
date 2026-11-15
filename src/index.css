@@ -303,6 +303,19 @@ h5 {
 }
 .wt-prose > *:first-child { margin-top: 0; }
 
+/* capturas con dimensiones uniformes en todas las entradas */
+.wt-shot {
+  height: 380px;
+  width: 100%;
+  padding: 10px;
+}
+@media (max-width: 768px) {
+  .wt-shot { height: 240px; }
+}
+
+/* compensa la cabecera fija al saltar a una fase desde el menú */
+.wt-anchor { scroll-margin-top: 6rem; }
+
 .wt-prose h1,
 .wt-prose h2,
 .wt-prose h3,

