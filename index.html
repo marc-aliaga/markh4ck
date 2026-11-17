@@ -18,8 +18,13 @@
       content="hacking, ingeniería inversa, reversing, ciberseguridad, cracking, crackme, pentesting, curso de hacking, de0aHacker, Mark H4ck"
     />
     <meta name="author" content="Mark H4ck" />
+    <meta name="publisher" content="Mark H4ck" />
+    <meta name="language" content="es" />
+    <meta name="rating" content="general" />
 
     <link rel="canonical" href="https://de0ahacker.com/" />
+    <link rel="alternate" hreflang="es" href="https://de0ahacker.com/" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -32,19 +37,61 @@
       content="Ciberseguridad, reversing, Active Directory y walkthroughs de HTB explicados paso a paso."
     />
     <meta property="og:image" content="https://de0ahacker.com/og-image.png" />
+    <meta property="og:image:secure_url" content="https://de0ahacker.com/og-image.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="815" />
     <meta property="og:image:height" content="687" />
-    <meta property="og:image:alt" content="Mark H4ck" />
+    <meta property="og:image:alt" content="Mark H4ck — ciberseguridad, reversing y Hack The Box" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@MarkH4ck" />
     <meta name="twitter:title" content="Mark H4ck — Reversing, Active Directory y Hack The Box" />
     <meta
       name="twitter:description"
       content="Ciberseguridad, reversing, Active Directory y walkthroughs de HTB explicados paso a paso."
     />
     <meta name="twitter:image" content="https://de0ahacker.com/og-image.png" />
+    <meta name="twitter:image:alt" content="Mark H4ck" />
+
+    <!-- Datos estructurados (JSON-LD) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://de0ahacker.com/#website",
+            "url": "https://de0ahacker.com/",
+            "name": "Mark H4ck",
+            "description": "Ciberseguridad, ingeniería inversa, Active Directory y walkthroughs de Hack The Box, paso a paso.",
+            "inLanguage": "es",
+            "publisher": { "@id": "https://de0ahacker.com/#person" }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://de0ahacker.com/#person",
+            "name": "Marc Aliaga",
+            "alternateName": "Mark H4ck",
+            "url": "https://de0ahacker.com/",
+            "nationality": "ES",
+            "jobTitle": "Investigador de ciberseguridad",
+            "knowsAbout": [
+              "Ingeniería inversa",
+              "Cracking",
+              "Active Directory",
+              "Pentesting",
+              "Hack The Box",
+              "Capture The Flag"
+            ],
+            "sameAs": [
+              "https://www.youtube.com/@MarkH4ck",
+              "https://github.com/marc-aliaga"
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

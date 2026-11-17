@@ -7,7 +7,6 @@ import VideoSections from "./VideoSections";
 import EntryList from "./EntryList";
 import Socials from "./Socials";
 import { GUIAS, HTB, FEATURED, SECTIONS } from "../data/content";
-import avatar from "../assets/pranay.jpg";
 
 const YT_CHANNEL = "https://www.youtube.com/@MarkH4ck";
 const GITHUB = "https://github.com/marc-aliaga";
@@ -93,75 +92,27 @@ function Home() {
   return (
     <Container>
       {/* Hero */}
-      <section className="grid grid-cols-[1fr_auto] items-center gap-12 pt-16 pb-20 max-md:grid-cols-1 max-md:pt-8 max-md:pb-12 max-md:gap-8">
-        <div className="max-md:order-2">
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="font-mono text-[#39ff14] mb-4"
-          >
-            <span className="text-[#8a8a93]">$ whoami</span>
-            <br />
-            &gt; Marc Aliaga — aka Mark H4ck
-            <span className="text-[#ff1f3d] animate-blink">_</span>
-          </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-            className="text-7xl leading-[1.05] max-md:text-[40px] max-md:leading-[1.1]"
-          >
-            Reversing, AD y{" "}
-            <span className="bg-gradient-to-r from-[#39ff14] to-[#ff1f3d] bg-clip-text text-transparent">
-              Hack The Box
-            </span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.25 }}
-            className="mt-6 text-xl text-[#8a8a93] max-w-[620px] leading-relaxed max-md:text-base"
-          >
-            Soy Marc, de España 🇪🇸. Este es mi rincón para documentar lo que voy
-            aprendiendo de ciberseguridad: rompo binarios, monto laboratorios de
-            Active Directory y resuelvo máquinas de Hack The Box. Todo lo que
-            descubro acaba aquí escrito, paso a paso.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="mt-8 flex flex-wrap gap-3"
-          >
-            <Link
-              to="/htb"
-              className="bg-[#39ff14] hover:bg-[#2fd60f] transition-colors text-[#030303] font-bold px-7 py-4 rounded-2xl shadow-[0_0_40px_-6px_rgba(57,255,20,0.6)]"
-            >
-              Ver walkthroughs de HTB
-            </Link>
-            <Link
-              to="/guias"
-              className="border border-white/10 hover:border-[#39ff14]/50 transition-colors text-white font-bold px-7 py-4 rounded-2xl"
-            >
-              Leer mis guías
-            </Link>
-          </motion.div>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.9 }}
-          className="relative w-[320px] h-[320px] max-md:w-[180px] max-md:h-[180px] max-md:order-1 max-md:mx-auto"
+      <section className="pt-24 pb-20 text-center max-md:pt-14 max-md:pb-12">
+        <motion.h1
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="font-dirt txt-grunge text-[clamp(64px,15vw,180px)] leading-[0.9] tracking-tight"
         >
-          <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-[#39ff14] to-[#ff1f3d] blur-md opacity-70" />
-          <img
-            src={avatar}
-            alt="Mark H4ck"
-            className="relative w-full h-full rounded-full object-cover border-4 border-[#030303]"
-          />
-        </motion.div>
+          <span className="bg-gradient-to-r from-[#39ff14] to-[#ff1f3d] bg-clip-text text-transparent">
+            MARK H4CK
+          </span>
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="mx-auto mt-8 max-w-[680px] text-xl text-[#8a8a93] leading-relaxed max-md:text-base max-md:mt-5"
+        >
+          Soy Marc, de España 🇪🇸. Rompo binarios, monto laboratorios de Active
+          Directory y resuelvo máquinas de Hack The Box. Todo lo que descubro
+          acaba aquí documentado, paso a paso.
+        </motion.p>
       </section>
 
       {/* Stats */}
