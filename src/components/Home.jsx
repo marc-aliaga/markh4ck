@@ -90,16 +90,24 @@ function Home() {
   }, [hash]);
 
   return (
+    <div className="retro90">
+    <style>{retroCSS}</style>
     <Container>
+      <div className="retro-topline"><span>[ MARK H4CK // TERMINAL WEB ]</span><span>ÚLTIMA ACTUALIZACIÓN: 2026</span></div>
+      <nav className="retro-nav" aria-label="Navegación retro">
+        <a href="#guias">[ GUÍAS ]</a><a href="#htb">[ HTB ]</a><a href="#videos">[ VÍDEOS ]</a><a href="#proyectos">[ CÓDIGO ]</a><a href="#contacto">[ CONTACTO ]</a>
+      </nav>
       {/* Hero */}
-      <section className="pt-24 pb-20 text-center max-md:pt-14 max-md:pb-12">
+      <section className="retro-hero pt-24 pb-20 text-center max-md:pt-14 max-md:pb-12">
+        <div className="retro-window-title"><span>■ C:\MARK_H4CK\HOME.EXE</span><span>_ □ ×</span></div>
+        <div className="retro-hero-body"><div className="retro-eyebrow">&lt;HTML&gt; // EST. 1998 // &lt;/HTML&gt;</div>
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="font-dirt txt-grunge text-[clamp(64px,15vw,180px)] leading-[0.9] tracking-tight"
+          className="text-[clamp(40px,10vw,110px)] leading-[1.1] tracking-tight"
         >
-          <span className="bg-gradient-to-r from-[#39ff14] to-[#ff1f3d] bg-clip-text text-transparent">
+          <span className="text-[#39ff14]">
             MARK H4CK
           </span>
         </motion.h1>
@@ -113,14 +121,17 @@ function Home() {
           Directory y resuelvo máquinas de Hack The Box. Todo lo que descubro
           acaba aquí documentado, paso a paso.
         </motion.p>
+        <div className="retro-status"><span className="retro-blink">●</span> SYSTEM ONLINE <span>·</span> 56K MODEM CONNECTED <span>·</span> NO COOKIES, JUST CHAOS</div>
+        </div>
       </section>
+      <div className="retro-marquee"><div>[ SYSTEM ONLINE ] // REVERSE ENGINEERING // ACTIVE DIRECTORY // CTF // ASSEMBLY // HACKING ÉTICO //</div></div>
 
       {/* Stats */}
       <FadeInStagger className="grid grid-cols-3 gap-4 mb-24 max-md:mb-16 max-md:gap-2">
         {STATS.map((s) => (
           <FadeIn key={s.label}>
             <div className="bg-[#0d0d0d] border border-white/5 rounded-3xl p-6 text-center max-md:p-4">
-              <p className="font-bebas text-4xl font-bold text-white max-md:text-xl">{s.value}</p>
+              <p className="font-mono text-3xl font-bold text-[#39ff14] max-md:text-lg">{s.value}</p>
               <p className="mt-1 font-mono text-sm text-[#8a8a93] max-md:text-xs">{s.label}</p>
             </div>
           </FadeIn>
@@ -144,7 +155,7 @@ function Home() {
                       <span className="font-term text-xs text-[#ff1f3d]">
                         {sec.label.toLowerCase()} · {w.date ? new Date(w.date).getFullYear() : ""}
                       </span>
-                      <h3 className="mt-3 font-dirt text-2xl leading-tight txt-grunge group-hover:text-[#39ff14] transition-colors">
+                      <h3 className="mt-3 font-mono font-bold text-xl leading-snug group-hover:text-[#39ff14] transition-colors">
                         {w.title}
                       </h3>
                     </div>
@@ -162,7 +173,7 @@ function Home() {
               >
                 <div>
                   <span className="font-term text-xs text-[#39ff14]">youtube · @MarkH4ck</span>
-                  <h3 className="mt-3 font-dirt text-2xl leading-tight txt-acid">
+                  <h3 className="mt-3 font-mono font-bold text-xl leading-snug text-[#39ff14]">
                     Vídeos nuevos cada semana
                   </h3>
                 </div>
@@ -292,7 +303,42 @@ function Home() {
         </p>
       </section>
     </Container>
+    </div>
   );
 }
 
+const retroCSS = `
+.retro90 { --lime:#8dfca4; --dim:#a7b8aa; --red:#f38c8c; color:#e5f4e8; font-family: "Courier New", Consolas, monospace; min-height:100vh; background:#080d0a; background-image:linear-gradient(rgba(86,150,100,.025) 1px,transparent 1px); background-size:100% 4px; }
+.retro90 * { box-sizing:border-box; }
+.retro90 .retro-topline { display:flex; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px solid #315a3c; color:var(--lime); font: 12px "Courier New",monospace; }
+.retro90 .retro-nav { display:flex; flex-wrap:wrap; gap:10px 20px; padding:18px 0; margin-bottom:30px; border-bottom:1px solid #294a32; background:transparent; }
+.retro90 .retro-nav a { color:var(--lime); font: bold 13px "Courier New",monospace; text-decoration:none; }
+.retro90 .retro-nav a:hover { color:#fff; text-decoration:underline; }
+.retro90 .retro-hero { padding:0!important; margin-bottom:25px; border:1px solid #386947; background:#0a120d; }
+.retro90 .retro-window-title { display:flex; justify-content:space-between; gap:8px; padding:10px 15px; background:#14291a; color:var(--lime); border-bottom:1px solid #386947; font: bold 12px "Courier New",monospace; text-align:left; }
+.retro90 .retro-hero-body { padding:48px 24px 35px; background:transparent; }
+.retro90 .retro-eyebrow { color:#91b99b; font-size:12px; letter-spacing:1px; margin-bottom:18px; }
+.retro90 .retro-hero h1 { font-family:"Courier New",Consolas,monospace!important; font-weight:900!important; font-size:clamp(38px,9vw,105px)!important; line-height:1.08!important; letter-spacing:-3px; text-shadow:none!important; overflow-wrap:anywhere; }
+.retro90 .retro-hero h1 span { background:none!important; color:var(--lime)!important; -webkit-text-fill-color:var(--lime)!important; }
+.retro90 .retro-hero p { color:#d5e2d7!important; font-family:"Courier New",monospace!important; font-size:clamp(14px,1.5vw,17px)!important; line-height:1.85!important; max-width:750px; }
+.retro90 .retro-status { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:30px; padding-top:15px; border-top:1px solid #284532; color:var(--lime); font-size:11px; }
+.retro90 .retro-blink { animation:retroBlink 1.2s steps(1) infinite; }
+@keyframes retroBlink { 50% { opacity:0; } }
+.retro90 .retro-marquee { overflow:hidden; white-space:nowrap; border-top:1px solid #315a3c; border-bottom:1px solid #315a3c; background:#101c13; color:var(--lime); padding:10px 0; font:12px "Courier New",monospace; margin-bottom:55px; }
+.retro90 .retro-marquee>div { width:max-content; animation:retroScroll 35s linear infinite; }
+@keyframes retroScroll { to { transform:translateX(-45%); } }
+.retro90 h2 { font-family:"Courier New",Consolas,monospace!important; font-weight:800!important; text-transform:none; letter-spacing:-1px; color:#e9f7ec!important; text-shadow:none!important; }
+.retro90 h2:before { content:"> "; color:var(--lime); }
+.retro90 section { scroll-margin-top:30px; }
+.retro90 section p, .retro90 section a, .retro90 section h3 { font-family:"Courier New",Consolas,monospace!important; }
+.retro90 .rounded-3xl { border-radius:2px!important; }
+.retro90 .rounded-3xl, .retro90 .neon-card { background:#0e1711!important; border:1px solid #315a3c!important; box-shadow:none!important; transition:background .15s,border-color .15s; }
+.retro90 a.rounded-3xl:hover, .retro90 a.neon-card:hover { transform:none!important; box-shadow:none!important; background:#14231a!important; border-color:var(--lime)!important; }
+.retro90 .font-dirt, .retro90 .font-bebas, .retro90 .font-term, .retro90 .font-mono { font-family:"Courier New",Consolas,monospace!important; letter-spacing:normal; text-shadow:none!important; }
+.retro90 .txt-grunge, .retro90 .txt-acid { text-shadow:none!important; }
+.retro90 .text-\[\#8a8a93\] { color:#b8c7bc!important; }
+.retro90 a:focus-visible { outline:2px solid var(--lime); outline-offset:3px; }
+@media(max-width:640px) { .retro90 .retro-topline span:last-child{display:none} .retro90 .retro-nav{gap:12px} .retro90 .retro-hero-body{padding:32px 14px 24px} .retro90 .retro-hero h1{letter-spacing:-2px} .retro90 .retro-status{font-size:10px} }
+@media(prefers-reduced-motion:reduce) { .retro90 .retro-blink,.retro90 .retro-marquee>div { animation:none!important; } }
+`;
 export default Home;
